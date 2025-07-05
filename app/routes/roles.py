@@ -9,7 +9,7 @@ from typing import List
 
 roles_router = APIRouter(prefix='/roles', tags=['Role'])
 
-roles_router.post('/create-role/', status_code=status.HTTP_201_CREATED,response_model=role_schema.ShowRoles)
+@roles_router.post('/create-role/', status_code=status.HTTP_201_CREATED,response_model=role_schema.ShowRoles)
 def create_role(
     request: role_schema.CreateRoles,
     db: Session=Depends(get_db)
@@ -41,13 +41,13 @@ def create_role(
             detail="Internal Server Error"
         )
                 
-roles_router.get('/get-all-roles/', status_code=status.HTTP_200_OK, response_model=List[role_schema.ShowRoles])
+@roles_router.get('/get-all-roles/', status_code=status.HTTP_200_OK, response_model=List[role_schema.ShowRoles])
 def get_all_roles(db: Session=Depends(get_db)):
     func_logger.info("GET /role/get-all-roles/ - Get list of all roles!")
     roles = db.query(Roles).all()
     return roles
   
-roles_router.get('/get-role-by-id/{id}', status_code=status.HTTP_200_OK, response_model=List[role_schema.ShowRoles])
+@roles_router.get('/get-role-by-id/{id}', status_code=status.HTTP_200_OK)
 def get_role_by_id(id: int, db: Session=Depends(get_db)):
     func_logger.info("GET /role/get-role-by-id/{id} - Get list of all roles!")
     role = RoleQueries.get_role_by_id(id, db).first()
@@ -59,7 +59,7 @@ def get_role_by_id(id: int, db: Session=Depends(get_db)):
     
     return role
 
-roles_router.put('/update-role/{id}', status_code=status.HTTP_202_ACCEPTED)
+@roles_router.put('/update-role/{id}', status_code=status.HTTP_202_ACCEPTED)
 def update_role(id: int, request: role_schema.RolesUpdate, db:Session=Depends(get_db)):
 
     role = RoleQueries.get_role_by_id(id, db).first()
@@ -108,4 +108,4 @@ def delete_role(id: int, db: Session = Depends(get_db)):
             detail="Something went wrong during role deletion."
         )
         
-    return "Roll Deleted Successfully!!"
+    return "Role Deleted Successfully!!"
