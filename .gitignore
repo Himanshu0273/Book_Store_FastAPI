@@ -1,0 +1,12 @@
+#Virtual Environment
+.venv
+
+#.env File
+.env
+
+#Alembic Migrations
+alembic/versions
+
+
+#Logs files
+.logs
