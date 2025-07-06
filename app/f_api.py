@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from app.config.logger_config import config_logger
 from fastapi import FastAPI
-
+from app.routes import roles,users
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -29,3 +29,6 @@ f_api = FastAPI(
     lifespan=lifespan,
 )
 
+
+f_api.include_router(users.user_router)
+f_api.include_router(roles.roles_router)

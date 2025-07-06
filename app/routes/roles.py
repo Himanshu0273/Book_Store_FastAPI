@@ -6,6 +6,7 @@ from app.config.logger_config import func_logger
 from sqlalchemy.orm import Session
 from app.queries.role_queries import RoleQueries
 from typing import List
+from app.exceptions import db_exception
 
 roles_router = APIRouter(prefix='/roles', tags=['Role'])
 
@@ -36,9 +37,8 @@ def create_role(
     except Exception as e:
         db.rollback()
         func_logger.exception("Unexpected error while creating role") 
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal Server Error"
+        raise db_exception.DBException(
+            detail="DB Error when creating role!!"
         )
                 
 @roles_router.get('/get-all-roles/', status_code=status.HTTP_200_OK, response_model=List[role_schema.ShowRoles])
@@ -79,7 +79,8 @@ def update_role(id: int, request: role_schema.RolesUpdate, db:Session=Depends(ge
          
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail="Something went wrong")
+        func_logger.error("DB Error when updating role")
+        raise db_exception.DBException(detail="DB Error while updating role")
     
     return "Role Updated Successfully!"
     
@@ -103,9 +104,6 @@ def delete_role(id: int, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         func_logger.error(f"Error deleting role ID {id}: {str(e)}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Something went wrong during role deletion."
-        )
+        raise db_exception.DBException(detail="DB Error while deleting role")
         
     return "Role Deleted Successfully!!"
