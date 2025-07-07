@@ -1,0 +1,47 @@
+from datetime import datetime, timedelta, timezone
+
+from jose import JWTError, jwt
+
+from app.config.load_config import api_settings
+from app.config.logger_config import func_logger
+from app.schemas.token_schema import TokenData
+
+
+class AccessToken:
+    def __init__(self, algorithm: str, time_expire: int = 30, secret_key=None):
+        self.algorithm = algorithm
+        self.secret_key = secret_key
+        self.time_expire = time_expire
+
+    def create_access_token(
+        self, data: dict, expires_delta: timedelta | None = None
+    ) -> str:
+        to_encode = data.copy()
+        if expires_delta:
+            expire = datetime.now(timezone.utc) + expires_delta
+
+        else:
+            expire = datetime.now(timezone.utc) + timedelta(minutes=self.time_expire)
+
+        to_encode.update({"exp": expire})
+
+        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+
+        return encoded_jwt
+
+    def verify_access_token(self, token: str, credentials_exception) -> TokenData:
+        try:
+            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
+
+            user_id = payload.get("sub")
+            if user_id is None:
+                func_logger.exception("The user id was not found")
+                raise credentials_exception
+
+            func_logger.info("User Authenticated!!")
+
+            return TokenData(user_id=user_id)
+
+        except JWTError as e:
+            func_logger.exception(f"JWT Error: {e}")
+            raise credentials_exception
