@@ -28,3 +28,9 @@ class UpdateUser(BaseModel):
     country: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ShowUserResponse(BaseModel):
+    status_code: int
+    message: str
+    payload: ShowUser

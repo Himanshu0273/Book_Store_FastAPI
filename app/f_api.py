@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.config.logger_config import config_logger
-from app.routes import auth, roles, users
+from app.routes import auth, book, roles, users
 
 
 @asynccontextmanager
@@ -36,3 +36,4 @@ f_api.include_router(auth.user_router)
 f_api.include_router(auth.login_router)
 f_api.include_router(users.user_router)
 f_api.include_router(roles.roles_router)
+f_api.include_router(book.book_router)

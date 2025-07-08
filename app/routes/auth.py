@@ -11,9 +11,8 @@ from app.db.session import get_db
 from app.exceptions.auth_exceptions import (InvalidCredentialsException,
                                             TokenCreationError)
 from app.exceptions.db_exception import DBException
-from app.models.user_model import User
 from app.queries.user_queries import UserQueries
-from app.schemas.user_schema import ShowUser
+from app.schemas.user_schema import ShowUser, ShowUserResponse
 from app.utils.hash_password import Hash
 from app.utils.response import build_response
 
@@ -21,7 +20,7 @@ user_router = APIRouter(prefix="/me", tags=["User"])
 login_router = APIRouter(prefix="/auth/login", tags=["Auth"])
 
 
-@user_router.get("/", response_model=ShowUser)
+@user_router.get("/", response_model=ShowUserResponse)
 def show_user_details(
     db: Session = Depends(get_db), current_user=Depends(get_current_user)
 ):
@@ -32,7 +31,7 @@ def show_user_details(
 
     return build_response(
         status_code=status.HTTP_200_OK,
-        payload=current_user,
+        payload=ShowUser.model_validate(current_user),
         message="Details for the current user fetched successfully!!",
     )
 
@@ -50,7 +49,7 @@ def login(
         user = UserQueries.get_user_by_email(email, db).first()
 
         if not user:
-            func_logger.warning("No user with the given email found!!")
+            func_logger.error("No user with the given email found!!")
             raise InvalidCredentialsException()
 
         if not Hash.verify_password(password, user.password):

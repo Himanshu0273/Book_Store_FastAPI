@@ -16,6 +16,7 @@ from app.utils.response import build_response
 roles_router = APIRouter(prefix="/roles", tags=["Role"])
 
 
+# Add role
 @roles_router.post(
     "/create-role/",
     status_code=status.HTTP_201_CREATED,
@@ -54,6 +55,7 @@ def create_role(
         raise db_exception.DBException(detail="DB Error when creating role!!")
 
 
+# Get all roles
 @roles_router.get(
     "/get-all-roles/",
     status_code=status.HTTP_200_OK,
@@ -71,6 +73,7 @@ def get_all_roles(
     )
 
 
+# Get role by ID
 @roles_router.get("/get-role-by-id/{id}", status_code=status.HTTP_200_OK)
 def get_role_by_id(
     id: int, db: Session = Depends(get_db), current_user: User = Depends(is_admin)
@@ -89,6 +92,7 @@ def get_role_by_id(
     )
 
 
+# Update Role
 @roles_router.put("/update-role/{id}", status_code=status.HTTP_202_ACCEPTED)
 def update_role(
     id: int,
@@ -122,6 +126,7 @@ def update_role(
         raise db_exception.DBException(detail="DB Error while updating role")
 
 
+# Delete Roles by ID
 @roles_router.delete("/delete-role/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_role(
     id: int, db: Session = Depends(get_db), current_user: User = Depends(is_admin)
