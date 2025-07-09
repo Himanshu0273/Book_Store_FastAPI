@@ -15,3 +15,10 @@ class BookAlreadyExists(HTTPException):
             status_code=status.HTTP_403_FORBIDDEN,
             detail=f"The book with this title already exists: {book_title}",
         )
+
+class AuthorNotPresent(HTTPException):
+    def __init__(self, author_name: str):
+        super().__init__(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The author with name: {author_name}, was not found!",
+        )

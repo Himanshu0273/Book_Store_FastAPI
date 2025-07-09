@@ -27,6 +27,7 @@ class Book(Base):
     image: Mapped[str] = mapped_column(String(255), nullable=False)
     avg_rating: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     added_on: Mapped[date] = mapped_column(Date, default=date.today)
+    purchased: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     inventory = relationship(
         "Inventory", back_populates="book", uselist=False, cascade="all, delete-orphan"

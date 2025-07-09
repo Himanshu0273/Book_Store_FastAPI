@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.auth.permissions import is_admin
 from app.config.logger_config import func_logger
 from app.db.session import get_db
-from app.exceptions.book_exceptions import BookAlreadyExists, BookNotFound
+from app.exceptions.book_exceptions import BookAlreadyExists, BookNotFound, AuthorNotPresent
 from app.exceptions.db_exception import DBException
 from app.models.book_model import Book
 from app.models.inventory_model import Inventory
@@ -20,7 +20,7 @@ book_router = APIRouter(prefix="/books", tags=["Book"])
 
 
 # Add book
-@book_router.post("/add-new-book/", status_code=status.HTTP_201_CREATED)
+@book_router.post("/add-new-book", status_code=status.HTTP_201_CREATED)
 def add_book_details(
     request: CreateBook,
     db: Session = Depends(get_db),
@@ -97,6 +97,26 @@ def get_book_by_id(id: int, db: Session = Depends(get_db)):
         message=f"The book with given ID is found: {id}",
     )
 
+#Get book by author
+@book_router.get('/get-books-by-author/{author_name}', status_code=status.HTTP_200_OK)
+def get_book_by_author(author_name: str, db: Session=Depends(get_db)):
+    
+    func_logger.info(f'GET - /books/get-books-by-author/{author_name}')
+    
+    books = BookQueries.get_books_by_author(author_name=author_name, db=db)
+    
+    if not books:
+        func_logger.error(f"Books for the given author not present: {author_name}")
+        raise AuthorNotPresent(author_name=author_name)
+    
+    response_books = [ShowBook.model_validate(book) for book in books]
+    
+    return build_response(
+        status_code=status.HTTP_200_OK,
+        payload=response_books,
+        message=f"These are all the books by author: {author_name}"
+    )
+    
 
 # Update book info
 @book_router.put("/update-book/{id}", status_code=status.HTTP_202_ACCEPTED)

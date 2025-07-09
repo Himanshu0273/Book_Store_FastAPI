@@ -17,7 +17,7 @@ user_router = APIRouter(prefix="/user", tags=["User"])
 
 
 @user_router.post(
-    "/add-user/",
+    "/add-user",
     response_model=user_schema.ShowUser,
     status_code=status.HTTP_201_CREATED,
 )
@@ -59,7 +59,7 @@ def create_user(req: user_schema.CreateUser, db: Session = Depends(get_db)):
         raise db_exception.DBException(detail="DB Error while creating user")
 
 
-@user_router.get("/", response_model=List[user_schema.ShowUser])
+@user_router.get("/get-all-users", response_model=List[user_schema.ShowUser])
 def get_all_users(
     db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)
 ):

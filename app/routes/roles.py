@@ -18,7 +18,7 @@ roles_router = APIRouter(prefix="/roles", tags=["Role"])
 
 # Add role
 @roles_router.post(
-    "/create-role/",
+    "/create-role",
     status_code=status.HTTP_201_CREATED,
     response_model=role_schema.ShowRoles,
 )
@@ -57,7 +57,7 @@ def create_role(
 
 # Get all roles
 @roles_router.get(
-    "/get-all-roles/",
+    "/get-all-roles",
     status_code=status.HTTP_200_OK,
     response_model=List[role_schema.ShowRoles],
 )
