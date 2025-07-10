@@ -10,7 +10,7 @@ from app.models.cart_model import Cart
 from app.models.user_model import User
 from app.exceptions.db_exception import DBException
 from app.exceptions.book_exceptions import BookNotFound
-from app.exceptions.cart_exceptions import CartNotFound, ItemQuantityLessThanZero
+from app.exceptions.cart_exceptions import CartNotFound, ItemQuantityLessThanZero, NotEnoughBooks
 from app.queries.cart_queries import CartQueries
 from app.queries.book_queries import BookQueries
 from app.schemas.cart_schema import ShowCart
@@ -58,12 +58,19 @@ def add_item_to_cart(item: CreateCartItem, user: User=Depends(get_current_user),
         raise BookNotFound(book_id=item.book_id)
         
         
-    cart_item = CartQueries.get_cart_item_by_id(cart_id= cart.id, book_id=item.book_id, db=db)
+    if book.quantity < item.quantity:
+        func_logger.error(f"There aren't enough books the maximum quantity available is: {book.quantity}")
+        raise NotEnoughBooks(quantity=book.quantity)
+    
+    
     
     if item.quantity<=0:
         raise ItemQuantityLessThanZero()
     
+    cart_item = CartQueries.get_cart_item_by_id(cart_id= cart.id, book_id=item.book_id, db=db)
+        
     if cart_item:
+        
         cart_item.quantity += item.quantity
         cart_item.updated_at = datetime.now(timezone.utc)
         
@@ -123,6 +130,12 @@ def add_book_quantity(
         if not item:
             func_logger.error(f"Could not find the item to increment: {book_id}")
             raise BookNotFound(book_id=book_id)
+        
+        book = BookQueries.get_book_by_id(book_id=book_id, db=db)
+        
+        if item.quantity + 1 > book.quantity:
+            func_logger.error(f"There aren't enough books. Max available is: {book.quantity}")
+            raise NotEnoughBooks(quantity=book.quantity)
 
         item.quantity += 1
         item.updated_at = datetime.now(timezone.utc)
