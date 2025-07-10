@@ -6,15 +6,17 @@ from sqlalchemy.orm import Session
 from app.auth.permissions import is_admin
 from app.config.logger_config import func_logger
 from app.db.session import get_db
-from app.exceptions.book_exceptions import (AuthorNotPresent,
-                                            BookAlreadyExists, BookNotFound)
+from app.exceptions.book_exceptions import (
+    AuthorNotPresent,
+    BookAlreadyExists,
+    BookNotFound,
+)
 from app.exceptions.db_exception import DBException
 from app.models.book_model import Book
 from app.models.inventory_model import Inventory
 from app.models.user_model import User
 from app.queries.book_queries import BookQueries
-from app.schemas.book_schema import (CreateBook, ShowBook, UpdateBook,
-                                     UpdateInventory)
+from app.schemas.book_schema import CreateBook, ShowBook, UpdateBook, UpdateInventory
 from app.utils.response import build_response
 
 book_router = APIRouter(prefix="/books", tags=["Book"])

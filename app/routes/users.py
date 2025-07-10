@@ -72,6 +72,7 @@ def get_all_users(
         )
 
     except Exception as e:
+        db.rollback()
         func_logger.exception(f"DB Error while fetching all users: {e}")
         raise db_exception.DBException("DB Error while fetching all users")
 
@@ -93,6 +94,7 @@ def get_user_by_id(
             message=f"User fetched successfully!\nid:{user_id}",
         )
     except Exception as e:
+        db.rollback()
         func_logger.exception(f"DB Error while fetching user by ID: {e}")
         raise db_exception.DBException("DB Error while fetching user by ID")
 

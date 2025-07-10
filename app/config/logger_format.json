@@ -1,7 +1,7 @@
 {
     "handler": [
         {
-            "sink": "app/logs/config_log.log",
+            "sink": "logs/config_log.log",
             "format": "{level:<6} | {time:YYYY-MM-DD HH:mm:ss} | {name:<20} | {line} | {message}",
             "rotation": "1 MB",
             "compression": "zip",
@@ -11,7 +11,7 @@
             "filter": "config"
         },
         {
-            "sink": "app/logs/func_log.log",
+            "sink": "logs/func_log.log",
             "format": "{level:<6} | {time:YYYY-MM-DD HH:mm:ss} | {name:<20} | {line} | {message}",
             "rotation": "1 MB",
             "compression": "zip",

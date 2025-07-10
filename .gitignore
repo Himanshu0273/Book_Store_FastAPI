@@ -14,4 +14,4 @@ alembic/versions
 
 
 #Logs files
-app/logs/
+logs/

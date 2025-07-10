@@ -12,3 +12,11 @@ def is_admin(current_user: User = Depends(get_current_user)) -> User:
         raise ForbiddenAccess()
 
     return current_user
+
+
+def is_customer(current_user: User = Depends(get_current_user)) -> User:
+    if not current_user.role or current_user.role.role_name.lower() != "customer":
+        func_logger.warning(f"Unauthorized role access: {current_user.role.role_name}")
+        raise ForbiddenAccess()
+
+    return current_user
