@@ -1,7 +1,7 @@
 from typing import List
 
-from sqlalchemy.orm import Session
 from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 from app.models.book_model import Book
 from app.models.inventory_model import Inventory
@@ -22,7 +22,7 @@ class BookQueries:
         return db.query(Book).filter(Book.title == book_title).first()
 
     @staticmethod
-    def get_books_by_author(author_name: str, db:Session)->List[Book]:
-        return db.query(Book).filter(func.lower(Book.author)==author_name.lower()).all()
-    
-    
+    def get_books_by_author(author_name: str, db: Session) -> List[Book]:
+        return (
+            db.query(Book).filter(func.lower(Book.author) == author_name.lower()).all()
+        )

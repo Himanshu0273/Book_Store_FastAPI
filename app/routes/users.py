@@ -18,7 +18,6 @@ user_router = APIRouter(prefix="/user", tags=["User"])
 
 @user_router.post(
     "/add-user",
-    response_model=user_schema.ShowUser,
     status_code=status.HTTP_201_CREATED,
 )
 def create_user(req: user_schema.CreateUser, db: Session = Depends(get_db)):

@@ -1,5 +1,5 @@
 from datetime import date
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from sqlalchemy import Date
 from sqlalchemy import Enum as SQLEnum
@@ -10,6 +10,7 @@ from app.db.base import Base
 from app.utils.genre_enum import GenreEnum
 
 if TYPE_CHECKING:
+    from app.models.cart_item_model import CartItem
     from app.models.inventory_model import Inventory
 
 
@@ -31,6 +32,9 @@ class Book(Base):
 
     inventory = relationship(
         "Inventory", back_populates="book", uselist=False, cascade="all, delete-orphan"
+    )
+    cart_items: Mapped[List["CartItem"]] = relationship(
+        back_populates="book", cascade="all, delete-orphan"
     )
 
     # This is so that Quantity can be checked as part of the book table while using the show schema

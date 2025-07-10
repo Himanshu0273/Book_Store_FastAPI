@@ -10,9 +10,9 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from app.config.load_config import db_settings
 from app.db.base import Base
-from app.models.roles_model import Roles
 from app.models.book_model import Book
 from app.models.inventory_model import Inventory
+from app.models.roles_model import Roles
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

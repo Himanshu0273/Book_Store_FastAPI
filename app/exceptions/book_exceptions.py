@@ -16,6 +16,7 @@ class BookAlreadyExists(HTTPException):
             detail=f"The book with this title already exists: {book_title}",
         )
 
+
 class AuthorNotPresent(HTTPException):
     def __init__(self, author_name: str):
         super().__init__(
