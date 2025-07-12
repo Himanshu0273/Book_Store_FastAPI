@@ -16,8 +16,6 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    print("🙏 App shutting down...")
-
 
 # App metadata
 f_api = FastAPI(
@@ -39,3 +37,4 @@ f_api.include_router(roles.roles_router)
 f_api.include_router(book.book_router)
 f_api.include_router(shipping_cost.shipping_router)
 f_api.include_router(cart.cart_router)
+f_api.include_router(orders.order_router)

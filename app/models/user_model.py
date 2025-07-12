@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -8,6 +8,7 @@ from app.db.base import Base
 
 if TYPE_CHECKING:
     from app.models.cart_model import Cart
+    from app.models.orders_model import Order
     from app.models.roles_model import Roles
 
 
@@ -33,3 +34,5 @@ class User(Base):
     cart: Mapped["Cart"] = relationship(
         "Cart", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
+
+    orders: Mapped[List["Order"]] = relationship("Order", back_populates="user")

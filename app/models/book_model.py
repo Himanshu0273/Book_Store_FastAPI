@@ -7,7 +7,7 @@ from sqlalchemy import Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
-from app.utils.genre_enum import GenreEnum
+from app.utils.enums import GenreEnum
 
 if TYPE_CHECKING:
     from app.models.cart_item_model import CartItem
@@ -41,3 +41,11 @@ class Book(Base):
     @property
     def quantity(self):
         return self.inventory.quantity if self.inventory else 0
+
+    # This can be avoided if I reference book.inventory directly whenever i want to change
+    # @quantity.setter
+    # def quantity(self, value):
+    #     if self.inventory:
+    #         self.inventory.quantity = value
+    #     else:
+    #         raise ValueError("Cannot set quantity because inventory is missing.")

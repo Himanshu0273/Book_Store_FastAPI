@@ -7,11 +7,9 @@ from app.auth.permissions import is_customer
 from app.config.logger_config import func_logger
 from app.db.session import get_db
 from app.exceptions.book_exceptions import BookNotFound
-from app.exceptions.cart_exceptions import (
-    CartNotFound,
-    ItemQuantityLessThanZero,
-    NotEnoughBooks,
-)
+from app.exceptions.cart_exceptions import (CartNotFound,
+                                            ItemQuantityLessThanZero,
+                                            NotEnoughBooks)
 from app.exceptions.db_exception import DBException
 from app.models.book_model import Book
 from app.models.cart_item_model import CartItem
@@ -102,7 +100,9 @@ def add_item_to_cart(
     update_cart_totals(cart=cart)
 
     db.commit()
-    db.refresh(cart_item)
+    db.refresh(cart)
+    if cart_item:
+        db.refresh(cart_item)
 
     func_logger.info(f"Cart item added: user_id={user.id}, book_id={item.book_id}")
     return cart_item

@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.shipping_cost_model import ShippingCost
@@ -14,7 +15,9 @@ class ShippingCostQueries:
     @staticmethod
     def get_country_by_name(country_name: str, db: Session) -> ShippingCost:
         return (
-            db.query(ShippingCost).filter(ShippingCost.country == country_name).first()
+            db.query(ShippingCost)
+            .filter(func.lower(ShippingCost.country) == country_name.strip().lower())
+            .first()
         )
 
     @staticmethod

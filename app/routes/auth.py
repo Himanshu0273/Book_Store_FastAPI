@@ -8,10 +8,8 @@ from app.auth.token import AccessToken
 from app.config.load_config import api_settings
 from app.config.logger_config import func_logger
 from app.db.session import get_db
-from app.exceptions.auth_exceptions import (
-    InvalidCredentialsException,
-    TokenCreationError,
-)
+from app.exceptions.auth_exceptions import (InvalidCredentialsException,
+                                            TokenCreationError)
 from app.exceptions.db_exception import DBException
 from app.queries.user_queries import UserQueries
 from app.schemas.user_schema import ShowUser, ShowUserResponse

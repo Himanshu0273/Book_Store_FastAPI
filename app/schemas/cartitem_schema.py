@@ -7,12 +7,13 @@ from app.schemas.book_schema import ShowBook
 
 
 class CartItemSchema(BaseModel):
+    book_id: int
+    quantity: int
     model_config = ConfigDict(from_attributes=True)
 
 
 class CreateCartItem(CartItemSchema):
-    book_id: int
-    quantity: int
+    pass
 
 
 class ShowCartItem(CartItemSchema):

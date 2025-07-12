@@ -5,7 +5,7 @@ class CartNotFound(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"The cart was not found!",
+            detail=f"The cart was empty or not found!",
         )
 
 
