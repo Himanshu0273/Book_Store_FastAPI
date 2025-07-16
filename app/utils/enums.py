@@ -18,12 +18,30 @@ class GenreEnum(str, Enum):
 
 
 class CartActivityEnum(str, Enum):
-    ACTIVE = "active"
-    ORDERED = "ordered"
-    CANCELLED = "cancelled"
+    ACTIVE = "ACTIVE"
+    ORDERED = "ORDERED"
+    CANCELLED = "CANCELLED"
 
 
 class PaymentsEnum(str, Enum):
     PENDING = "PENDING"
-    SUCCESSFUL = "SUCCESSFULL"
+    SUCCESSFUL = "SUCCESSFUL"
     FAILED = "FAILED"
+
+
+class PaymentMethodEnum(str, Enum):
+    UPI = "UPI"
+    COD = "COD"
+    CARD = "CARD"
+    NETBANKING = "NETBANKING"
+
+
+class TransactionStatusEnum(str, Enum):
+    SUCCESS = "SUCCESS"
+    FAILURE = "FAILURE"
+    
+# class OrderStatusEnum(str, Enum):
+#     PENDING = "PENDING"
+#     CONFIRMED = "CONFIRMED"
+#     COMPLETED = "COMPLETED"
+#     CANCELLED = "CANCELLED"

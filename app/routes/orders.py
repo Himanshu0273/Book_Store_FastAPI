@@ -30,8 +30,6 @@ from app.utils.tax_utils import calculate_tax
 from typing import List
 
 order_router = APIRouter(prefix="/order", tags=["Order"])
-
-
 @order_router.post("/", status_code=status.HTTP_201_CREATED)
 def create_order(
     request: CreateOrderSchema,
@@ -45,16 +43,9 @@ def create_order(
 
     try:
         cost = 0
+
         cart_items = CartQueries.get_all_cart_items(cart_id=cart.id, db=db)
-        available_quantity = item.book.inventory.quantity
-        if cartitem.quantity > available_quantity:
-            func_logger.warning(
-                f"Book ID {item.book_id} has insufficient stock. Requested: {cartitem.quantity}, Available: {available_quantity}"
-            )
-            raise HTTPException(
-                status_code=400,
-                detail=f"Book '{item.book.title}' has only {available_quantity} in stock. Please update your cart.",
-            )
+
         if not cart_items:
             func_logger.warning(f"Cart ID {cart.id} has no items.")
             raise CartNotFound()
@@ -62,8 +53,21 @@ def create_order(
         for item in cart_items:
             cartitem = ShowCartItem.model_validate(item)
             book = BookQueries.get_book_by_id(book_id=item.book_id, db=db)
+
             if not book:
                 raise BookNotFound(book_id=item.book_id)
+
+            available_quantity = book.inventory.quantity
+            if cartitem.quantity > available_quantity:
+                func_logger.warning(
+                    f"Book ID {item.book_id} has insufficient stock. "
+                    f"Requested: {cartitem.quantity}, Available: {available_quantity}"
+                )
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Book '{book.title}' has only {available_quantity} in stock. Please update your cart.",
+                )
+
             book.inventory.quantity -= cartitem.quantity
             func_logger.debug(
                 f"Decremented book_id={item.book_id} by {cartitem.quantity}"
@@ -73,11 +77,11 @@ def create_order(
         shipping_obj = ShippingCostQueries.get_country_by_name(
             country_name=request.country, db=db
         )
+
         if not shipping_obj:
             func_logger.error(
                 f"No shipping entry found for country '{request.country}'"
             )
-            # shipping_cost = 2000
             raise CountryNotFound(country=request.country)
 
         shipping_cost = shipping_obj.cost
@@ -97,12 +101,14 @@ def create_order(
 
         cart.status = CartActivityEnum.ORDERED
         db.add(final_order)
+
         func_logger.info(
             f"Order created. Total: ₹{total_cost:.2f}. Cart marked as ORDERED."
         )
 
         db.commit()
         db.refresh(final_order)
+
         func_logger.info(f"Order committed successfully with order_id={final_order.id}")
 
         return build_response(
@@ -302,6 +308,11 @@ def delete_order_by_customer(
         db.commit()
         func_logger.info(
             f"Order ID {order_id} deleted successfully for user_id={current_user.id}"
+        )
+        return build_response(
+            status_code=status.HTTP_200_OK,
+            payload=order_id,
+            message=f"The order is deleted successfully"
         )
 
     except SQLAlchemyError as e:

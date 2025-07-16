@@ -12,6 +12,7 @@ from app.utils.enums import PaymentsEnum
 if TYPE_CHECKING:
     from app.models.cart_model import Cart
     from app.models.user_model import User
+    from app.models.payments_model import Payments
 
 
 class Order(Base):
@@ -41,3 +42,4 @@ class Order(Base):
 
     user = relationship("User", back_populates="orders", passive_deletes=True)
     cart = relationship("Cart", back_populates="order", passive_deletes=True)
+    payment = relationship("Payments", back_populates="order", uselist=False)
