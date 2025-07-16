@@ -119,6 +119,61 @@ def get_book_by_author(author_name: str, db: Session = Depends(get_db)):
         message=f"These are all the books by author: {author_name}",
     )
 
+#Get book by title
+@book_router.get('/get-books-by-title/{book_title}',status_code=status.HTTP_200_OK)
+def get_book_by_title(book_title: str, db:Session=Depends(get_db)):
+    func_logger.info(f"GET - /books/get-books-by-title/{book_title}")
+
+    # books = BookQueries.get_books_by_author(author_name=author_name, db=db)
+    books = BookQueries.get_books_by_title(book_title=book_title, db=db)
+    if not books:
+        func_logger.error(f"Books for the given title not present: {book_title}")
+        raise BookNotFound(book_id=404)
+
+    response_books = [ShowBook.model_validate(book) for book in books]
+
+    return build_response(
+        status_code=status.HTTP_200_OK,
+        payload=response_books,
+        message=f"These are all the books of title: {book_title}",
+    )
+    
+#Sort books by title in asc
+@book_router.get('/sort-books-by-title-asc', status_code=status.HTTP_200_OK)
+def sort_books_asc(db: Session = Depends(get_db)):
+    func_logger.info("GET - /books/sort-books-by-title-asc")
+
+    books = BookQueries.sort_books_by_title_asc(db=db)
+    if not books:
+        func_logger.error("No books found to sort by title ascending.")
+        raise BookNotFound(book_id=0)
+
+    response_books = [ShowBook.model_validate(book) for book in books]
+
+    return build_response(
+        status_code=status.HTTP_200_OK,
+        payload=response_books,
+        message="Books sorted by title in ascending order",
+    )
+
+#Sort books by title in desc
+@book_router.get('/sort-books-by-title-desc', status_code=status.HTTP_200_OK)
+def sort_books_asc(db: Session = Depends(get_db)):
+    func_logger.info("GET - /books/sort-books-by-title-desc")
+
+    books = BookQueries.sort_books_by_title_desc(db=db)
+    if not books:
+        func_logger.error("No books found to sort by title descending.")
+        raise BookNotFound(book_id=0)
+
+    response_books = [ShowBook.model_validate(book) for book in books]
+
+    return build_response(
+        status_code=status.HTTP_200_OK,
+        payload=response_books,
+        message="Books sorted by title in descending order",
+    )
+
 
 # Update book info
 @book_router.put("/update-book/{id}", status_code=status.HTTP_202_ACCEPTED)
