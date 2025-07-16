@@ -14,3 +14,10 @@ class AttemptsExceeded(HTTPException):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="You have exceeded the number of valid attempts: (3)"
         )
+        
+class TransactionNotAdded(HTTPException):
+    def __init__(self):
+        super().__init__(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Couldn't add the transaction due to some internal issues"
+        )
