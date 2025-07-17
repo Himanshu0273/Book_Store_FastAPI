@@ -36,14 +36,14 @@ class CartQueries:
             .filter(Cart.user_id == user.id, Cart.status == CartActivityEnum.ACTIVE)
             .first()
         )
-        
+
     @staticmethod
     def get_cart_by_user_id(user_id: id, db: Session):
         return (
             db.query(Cart)
             .filter(Cart.user_id == user_id, Cart.status == CartActivityEnum.ACTIVE)
             .first()
-        )     
+        )
 
     @staticmethod
     def get_cart_item_by_id(cart_id: int, book_id: int, db: Session) -> CartItem | None:

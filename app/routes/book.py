@@ -119,9 +119,10 @@ def get_book_by_author(author_name: str, db: Session = Depends(get_db)):
         message=f"These are all the books by author: {author_name}",
     )
 
-#Get book by title
-@book_router.get('/get-books-by-title/{book_title}',status_code=status.HTTP_200_OK)
-def get_book_by_title(book_title: str, db:Session=Depends(get_db)):
+
+# Get book by title
+@book_router.get("/get-books-by-title/{book_title}", status_code=status.HTTP_200_OK)
+def get_book_by_title(book_title: str, db: Session = Depends(get_db)):
     func_logger.info(f"GET - /books/get-books-by-title/{book_title}")
 
     # books = BookQueries.get_books_by_author(author_name=author_name, db=db)
@@ -137,9 +138,10 @@ def get_book_by_title(book_title: str, db:Session=Depends(get_db)):
         payload=response_books,
         message=f"These are all the books of title: {book_title}",
     )
-    
-#Sort books by title in asc
-@book_router.get('/sort-books-by-title-asc', status_code=status.HTTP_200_OK)
+
+
+# Sort books by title in asc
+@book_router.get("/sort-books-by-title-asc", status_code=status.HTTP_200_OK)
 def sort_books_asc(db: Session = Depends(get_db)):
     func_logger.info("GET - /books/sort-books-by-title-asc")
 
@@ -156,8 +158,9 @@ def sort_books_asc(db: Session = Depends(get_db)):
         message="Books sorted by title in ascending order",
     )
 
-#Sort books by title in desc
-@book_router.get('/sort-books-by-title-desc', status_code=status.HTTP_200_OK)
+
+# Sort books by title in desc
+@book_router.get("/sort-books-by-title-desc", status_code=status.HTTP_200_OK)
 def sort_books_asc(db: Session = Depends(get_db)):
     func_logger.info("GET - /books/sort-books-by-title-desc")
 

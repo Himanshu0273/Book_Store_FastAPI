@@ -11,10 +11,10 @@ from alembic import context
 from app.config.load_config import db_settings
 from app.db.base import Base
 from app.models.book_model import Book
-from app.models.inventory_model import Inventory
-from app.models.roles_model import Roles
 from app.models.cart_model import Cart
+from app.models.inventory_model import Inventory
 from app.models.orders_model import Order
+from app.models.roles_model import Roles
 from app.models.shipping_cost_model import ShippingCost
 
 # this is the Alembic Config object, which provides

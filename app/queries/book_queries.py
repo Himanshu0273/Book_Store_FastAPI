@@ -26,14 +26,13 @@ class BookQueries:
         return db.query(Book).filter(Book.author.ilike(f"%{author_name}%"))
 
     @staticmethod
-    def get_books_by_title(book_title: str, db: Session)->List[Book]:
+    def get_books_by_title(book_title: str, db: Session) -> List[Book]:
         return db.query(Book).filter(Book.title.ilike(f"%{book_title}%"))
-    
+
     @staticmethod
-    def sort_books_by_title_asc(db:Session)->List[Book]:
+    def sort_books_by_title_asc(db: Session) -> List[Book]:
         return db.query(Book).order_by(Book.title.asc()).all()
-    
-    
+
     @staticmethod
-    def sort_books_by_title_desc(db:Session)->List[Book]:
+    def sort_books_by_title_desc(db: Session) -> List[Book]:
         return db.query(Book).order_by(Book.title.desc()).all()

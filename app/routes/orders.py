@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
@@ -27,9 +28,9 @@ from app.utils.enums import CartActivityEnum, PaymentsEnum
 from app.utils.response import build_response
 from app.utils.tax_utils import calculate_tax
 
-from typing import List
-
 order_router = APIRouter(prefix="/order", tags=["Order"])
+
+
 @order_router.post("/", status_code=status.HTTP_201_CREATED)
 def create_order(
     request: CreateOrderSchema,
@@ -312,7 +313,7 @@ def delete_order_by_customer(
         return build_response(
             status_code=status.HTTP_200_OK,
             payload=order_id,
-            message=f"The order is deleted successfully"
+            message=f"The order is deleted successfully",
         )
 
     except SQLAlchemyError as e:

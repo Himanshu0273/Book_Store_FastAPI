@@ -11,8 +11,8 @@ from app.utils.enums import PaymentsEnum
 
 if TYPE_CHECKING:
     from app.models.cart_model import Cart
-    from app.models.user_model import User
     from app.models.payments_model import Payments
+    from app.models.user_model import User
 
 
 class Order(Base):

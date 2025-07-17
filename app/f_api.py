@@ -3,7 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.config.logger_config import config_logger
-from app.routes import auth, book, cart, orders, roles, shipping_cost, users, payments
+from app.routes import (auth, book, cart, orders, payments, roles,
+                        shipping_cost, users)
 
 
 @asynccontextmanager
