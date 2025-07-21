@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 
 from app.auth.permissions import is_admin
@@ -15,7 +15,10 @@ from app.models.user_model import User
 from app.queries.book_queries import BookQueries
 from app.schemas.book_schema import (CreateBook, ShowBook, UpdateBook,
                                      UpdateInventory)
+from app.schemas.pagination_schema import PaginatedResponse
+
 from app.utils.response import build_response
+from app.utils.pagination import paginate_query
 
 book_router = APIRouter(prefix="/books", tags=["Book"])
 
@@ -67,17 +70,30 @@ def add_book_details(
 
 # Get All books
 @book_router.get("/get-all-books", status_code=status.HTTP_200_OK)
-def get_all_books(db: Session = Depends(get_db)):
+def get_all_books(limit:int=Query(10, ge=1, le=20),after: int|None=Query(None),db: Session = Depends(get_db)):
     func_logger.info("GET - book/get-all-books")
 
     books = BookQueries.get_all_books_query(db=db)
 
+    if after:
+        books=[book for book in books if book.id>after]
+        
+    has_next=len(books)>limit
+    paginated_books = books[:limit]
+    
+    next_cursor = paginated_books[-1].id if has_next else None
+    
     response_books: List[ShowBook] = []
-    response_books = [ShowBook.model_validate(book) for book in books]
+    response_books = [ShowBook.model_validate(book) for book in paginated_books]
+    
     return build_response(
         status_code=status.HTTP_200_OK,
-        payload=response_books,
-        message="These are all the books in the Library!",
+        payload=PaginatedResponse[ShowBook](
+            data=response_books,
+            next_cursor=next_cursor,
+            message="Paginated list of books retrieved successfully"
+        ),
+        message="Paginated list of books retrieved successfully",
     )
 
 

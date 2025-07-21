@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 
 from app.auth.permissions import is_customer
@@ -18,8 +18,10 @@ from app.models.user_model import User
 from app.queries.book_queries import BookQueries
 from app.queries.cart_queries import CartQueries
 from app.schemas.cart_schema import ShowCart
+from app.schemas.pagination_schema import PaginatedResponse
 from app.schemas.cartitem_schema import CreateCartItem, ShowCartItem
 from app.utils.response import build_response
+from app.utils.pagination import paginate_query
 from app.utils.update_cart import update_cart_totals
 
 cart_router = APIRouter(prefix="/cart", tags=["Cart"])
@@ -111,6 +113,8 @@ def add_item_to_cart(
 # Get all cart items for a user
 @cart_router.get("/all-items", status_code=status.HTTP_200_OK)
 def get_all_items(
+    limit: int=Query(10,ge=1,le=10),
+    after:int|None=Query(None),
     db: Session = Depends(get_db),
     cart: Cart = Depends(get_cart),
     user: User = Depends(is_customer),
@@ -124,11 +128,23 @@ def get_all_items(
             payload="No items added in cart",
             message="The cart is empty",
         )
+        
+    if after:
+        items = [item for item in items if item.id>after]
+        
+    has_next = len(items)>limit
+    paginated_items = items[:limit]
+    
+    next_cursor = paginated_items[-1].id if has_next else None
 
     return build_response(
         status_code=status.HTTP_200_OK,
-        payload=items,
-        message="These are all the items in your cart",
+        payload=PaginatedResponse(
+            data=paginated_items,
+            next_cursor=next_cursor,
+            message="These are all the items in your cart (paginated)",
+        ),
+        message="These are all the items in your cart (paginated)",
     )
 
 
